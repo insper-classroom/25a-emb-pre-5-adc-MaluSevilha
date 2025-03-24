@@ -9,6 +9,9 @@
 #include "data.h"
 QueueHandle_t xQueueData;
 
+volatile int datas[5];
+volatile int n = 0;
+
 // não mexer! Alimenta a fila com os dados do sinal
 void data_task(void *p) {
     vTaskDelay(pdMS_TO_TICKS(400));
@@ -29,10 +32,22 @@ void process_task(void *p) {
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
             // implementar filtro aqui!
+            if (n < 4){
+                datas[n] = data;
+                n++;
+            } else{
+                if (n != 4){
+                    data[0] = data[1];
+                    data[1] = data[2];
+                    data[3] = data[4];
+                } 
 
+                data[4] = data;
+                data = (data[0] + data[1] + data[2] + data[3] + data[4])/5;
+                n++;
+            }
 
-
-
+            printf(data);
             // deixar esse delay!
             vTaskDelay(pdMS_TO_TICKS(50));
         }
