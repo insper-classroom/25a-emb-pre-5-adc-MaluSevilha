@@ -35,14 +35,14 @@ void process_task(void *p) {
                 datas[i] = datas[i + 1];
             }
             
-            datas[4] = *data;
+            datas[4] = data;
         
             int soma = 0;
             for (int i = 0; i < 5; i++) {
                 soma += datas[i];
             }
         
-            *data = soma / 5;
+            data = soma / 5;
             printf("%d", soma/5);
             // deixar esse delay!
             vTaskDelay(pdMS_TO_TICKS(50));
