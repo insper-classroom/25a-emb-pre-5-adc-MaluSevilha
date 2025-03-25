@@ -11,14 +11,16 @@ QueueHandle_t xQueueData;
 
 volatile int datas[5] = {0, 0, 0, 0, 0};
 
-int media_movel(volatile int datas[5], int data){
+void media_movel(volatile int datas[5], int data){
     datas[0] = datas[1];
     datas[1] = datas[2];
     datas[2] = datas[3];
     datas[3] = datas[4];
     datas[4] = data;
 
-    return (int)(datas[0] + datas[1] + datas[2] + datas[3] + datas[4])/5;
+    data = (int)(datas[0] + datas[1] + datas[2] + datas[3] + datas[4])/5;
+
+    datas[4] = data;
 }
 
 // não mexer! Alimenta a fila com os dados do sinal
@@ -41,7 +43,10 @@ void process_task(void *p) {
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
             // implementar filtro aqui
-            data = media_movel(datas, data);
+            media_movel(datas, data);
+
+            data = datas[4];
+            
             printf("%d", data);
             // deixar esse delay!
             vTaskDelay(pdMS_TO_TICKS(50));
